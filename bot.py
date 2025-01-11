@@ -1,13 +1,8 @@
 # Import for the Web Bot
 from botcity.web import WebBot, Browser, By
+# import dos módulos Web e Dados Excel
 from jornadaRPA_browser import *
 from jornadaRPA_dados import *
-
-# Import for integration with BotCity Maestro SDK
-#from botcity.maestro import *
-
-# Disable errors if we are not connected to Maestro
-#BotMaestroSDK.RAISE_NOT_CONNECTED = False
 
 
 def main():
@@ -36,31 +31,37 @@ def main():
         ID, PrimeiroNome, UltimoNome, Pais, DataNasc, Solicitacao = linha
 
         # Formatar a datas como string no formato dd/mm/aaaa
-        DataNasc = DataNasc.strftime("%d/%m/%Y")
-        Solicitacao = Solicitacao.strftime("%d/%m/%Y")
+        #DataNasc = DataNasc.strftime("%d/%m/%Y")
+        #Solicitacao = Solicitacao.strftime("%d/%m/%Y")
 
-        # Mapeamento dos campos formulário
-        campoID = bot.find_element("/html/body/div[2]/section/div[2]/div/section/div[2]/form/div/div[1]/div/div/input",
-        by=By.XPATH)
-        campoPriNome = bot.find_element("/html/body/div[2]/section/div[2]/div/section/div[2]/form/div/div[2]/div/div/input", 
-        by=By.XPATH)
-        campoUltNome = bot.find_element("/html/body/div[2]/section/div[2]/div/section/div[2]/form/div/div[3]/div/div/input",
-        by=By.XPATH)
-        campoPais = bot.find_element("/html/body/div[2]/section/div[2]/div/section/div[2]/form/div/div[5]/div/div/select",
-        by=By.XPATH)
-        campoNasc = bot.find_element("/html/body/div[2]/section/div[2]/div/section/div[2]/form/div/div[4]/div/div/input",
-        by=By.XPATH)
-        campoSolCred = bot.find_element("/html/body/div[2]/section/div[2]/div/section/div[2]/form/div/div[6]/div/div/input",
-        by=By.XPATH)
-        btnGravar = bot.find_element("btao", by=By.ID)
+        # Mapeamento dos campos formulário/ dentro do for pois são dinâmicos os campos
+        try:
+            campoID = bot.find_element("/html/body/div[2]/section/div[2]/div/section/div[2]/form/div/div[1]/div/div/input",
+            by=By.XPATH)
+            campoPriNome = bot.find_element("/html/body/div[2]/section/div[2]/div/section/div[2]/form/div/div[2]/div/div/input", 
+            by=By.XPATH)
+            campoUltNome = bot.find_element("/html/body/div[2]/section/div[2]/div/section/div[2]/form/div/div[3]/div/div/input",
+            by=By.XPATH)
+            campoPais = bot.find_element("/html/body/div[2]/section/div[2]/div/section/div[2]/form/div/div[5]/div/div/select",
+            by=By.XPATH)
+            campoNasc = bot.find_element("/html/body/div[2]/section/div[2]/div/section/div[2]/form/div/div[4]/div/div/input",
+            by=By.XPATH)
+            campoSolCred = bot.find_element("/html/body/div[2]/section/div[2]/div/section/div[2]/form/div/div[6]/div/div/input",
+            by=By.XPATH)
+            btnGravar = bot.find_element("btao", by=By.ID)
+        except Exception as e:
+            print(f"Erro ao mapear campos: {e}")
 
-        # Preenchimento dos campos formulário
-        campoID.send_keys(ID)
-        campoPriNome.send_keys(PrimeiroNome)
-        campoUltNome.send_keys(UltimoNome)
-        campoPais.send_keys(Pais)
-        campoNasc.send_keys(DataNasc)
-        campoSolCred.send_keys(Solicitacao)
+        try:
+            # Preenchimento dos campos formulário
+            campoID.send_keys(ID)
+            campoPriNome.send_keys(PrimeiroNome)
+            campoUltNome.send_keys(UltimoNome)
+            campoPais.send_keys(Pais)
+            campoNasc.send_keys(Dados_jornadaRPA.convertData(DataNasc))
+            campoSolCred.send_keys(Dados_jornadaRPA.convertData(Solicitacao))
+        except Exception as e:
+            print(f"Erro ao preencher campos: {e}")
 
         # Click botão Gravar
         btnGravar.click()

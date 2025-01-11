@@ -2,6 +2,9 @@
 from botcity.web import WebBot, Browser, By
 from botcity.plugins.excel import BotExcelPlugin
 
+# Import date time
+import datetime
+
 class Dados_jornadaRPA():
 
     #Ler planilha
@@ -18,6 +21,10 @@ class Dados_jornadaRPA():
             dados = bot_excel.read(path).get_range(range, sheet)[1:]
 
         return dados
+    
+    def convertData(data):
+        dataConv = data.strftime("%d/%m/%Y")
+        return dataConv
 
     
 
